@@ -6,8 +6,9 @@ on:
 permissions:
   contents: read
 jobs:
-  test-linux:
+  test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -23,3 +24,4 @@ jobs:
             echo "version mismatch"
             exit 1
           fi
+        shell: bash
