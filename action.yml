@@ -6,7 +6,7 @@ inputs:
     description: "The SQLite version you wish to install."
     required: true
 outputs:
-  shared_path:
+  sqlite-location:
     description: TODO
 runs:
   using: "node16"

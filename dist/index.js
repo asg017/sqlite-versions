@@ -104,6 +104,7 @@ function run() {
             targetPath,
         ]);
         result.status;
+        core.exportVariable("sqlite-location", process.cwd());
         if (platform === "windows")
             exportEnvAppend("PATH", process.cwd());
         else if (platform === "macos")

@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: asg017/sqlite-versions@main
+        id: sqlite-versions
         with:
           version: "3.39.0"
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+        env:
+          LD_LIBRARY_PATH: ${{ steps.sqlite-versions.sqlite-location }}
