@@ -9,7 +9,7 @@ jobs:
   test-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: asg017/sqlite-versions
+      - uses: asg017/sqlite-versions@main
         with:
           version: 3.39
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
