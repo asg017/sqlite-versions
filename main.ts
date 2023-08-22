@@ -62,8 +62,10 @@ async function run(): Promise<void> {
   console.log(process.platform, platform);
   const prefix = platform === "windows" ? "" : "lib";
   const suffix =
-    platform === "windows" ? "dll" : platform === "macos" ? "dlyib" : "so";
-  const targetPath = `${prefix}sqlite3.0.${suffix}`;
+    platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so";
+  const targetPath = `${prefix}sqlite3${
+    platform === "macos" ? ".0" : ""
+  }.${suffix}`;
 
   let directory = await downloadSqliteAmalgammation(VERSION, "foo");
 
