@@ -94,7 +94,7 @@ function run() {
                 : "linux";
         console.log(process.platform, platform);
         const prefix = platform === "windows" ? "" : "lib";
-        const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so";
+        const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
         const targetPath = `${prefix}sqlite3${platform === "macos" ? ".0" : ""}.${suffix}`;
         let directory = yield downloadSqliteAmalgammation(VERSION, "foo");
         const result = (0, node_child_process_1.spawnSync)("gcc", [
