@@ -1,0 +1,15 @@
+name: "build"
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: asg017/sqlite-versions
+        with:
+          version: 3.39
+      - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"

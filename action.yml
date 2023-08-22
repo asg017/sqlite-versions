@@ -1,0 +1,13 @@
+name: "setup-sqlite-version"
+description: "Set up a specific version of SQLite, for testing and ebugging"
+author: "Alex Garcia"
+inputs:
+  version:
+    description: "The SQLite version you wish to install."
+    required: true
+outputs:
+  shared_path:
+    description: TODO
+runs:
+  using: "node16"
+  main: "dist/index.js"
