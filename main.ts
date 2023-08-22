@@ -6,6 +6,7 @@ import AdmZip from "adm-zip";
 import * as path from "node:path";
 
 function exportEnvAppend(name: string, value: string) {
+  console.log("exportEnvAppend", name, value);
   core.exportVariable(
     name,
     process.env[name] ? `${process.env[name]}:${value}` : value
@@ -58,7 +59,7 @@ async function run(): Promise<void> {
       : process.platform === "darwin"
       ? "macos"
       : "linux";
-
+  console.log(process.platform, platform);
   const prefix = platform === "windows" ? "" : "lib";
   const suffix =
     platform === "windows" ? "dll" : platform === "macos" ? "dlyib" : "so";

@@ -49,6 +49,7 @@ const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const path = __importStar(__nccwpck_require__(9411));
 function exportEnvAppend(name, value) {
+    console.log("exportEnvAppend", name, value);
     core.exportVariable(name, process.env[name] ? `${process.env[name]}:${value}` : value);
 }
 /*
@@ -91,6 +92,7 @@ function run() {
             : process.platform === "darwin"
                 ? "macos"
                 : "linux";
+        console.log(process.platform, platform);
         const prefix = platform === "windows" ? "" : "lib";
         const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dlyib" : "so";
         const targetPath = `${prefix}sqlite3.0.${suffix}`;
