@@ -64,7 +64,7 @@ async function run(): Promise<void> {
   const suffix =
     platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
   const targetPath = `${prefix}sqlite3${
-    platform === "macos" ? ".0" : ""
+    platform === "macos" ? "" : ""
   }.${suffix}`;
 
   let directory = await downloadSqliteAmalgammation(VERSION, "foo");
@@ -80,7 +80,7 @@ async function run(): Promise<void> {
   result.status;
   core.exportVariable("sqlite-location", process.cwd());
 
-  if (platform === "windows") exportEnvAppend("PATH", process.cwd());
+  if (platform === "windows") core.addPath(process.cwd());
   else if (platform === "macos")
     exportEnvAppend("DYLD_LIBRARY_PATH", process.cwd());
   else if (platform === "linux")

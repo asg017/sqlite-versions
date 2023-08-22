@@ -95,7 +95,7 @@ function run() {
         console.log(process.platform, platform);
         const prefix = platform === "windows" ? "" : "lib";
         const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
-        const targetPath = `${prefix}sqlite3${platform === "macos" ? ".0" : ""}.${suffix}`;
+        const targetPath = `${prefix}sqlite3${platform === "macos" ? "" : ""}.${suffix}`;
         let directory = yield downloadSqliteAmalgammation(VERSION, "foo");
         const result = (0, node_child_process_1.spawnSync)("gcc", [
             "-fPIC",
@@ -108,7 +108,7 @@ function run() {
         result.status;
         core.exportVariable("sqlite-location", process.cwd());
         if (platform === "windows")
-            exportEnvAppend("PATH", process.cwd());
+            core.addPath(process.cwd());
         else if (platform === "macos")
             exportEnvAppend("DYLD_LIBRARY_PATH", process.cwd());
         else if (platform === "linux")
