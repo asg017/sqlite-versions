@@ -19,6 +19,7 @@ jobs:
           version: "3.39.0"
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+      - uses: mxschmitt/action-tmate@v3
       - run: |
           if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "3.39.0" ]; then
             echo "version mismatch"
