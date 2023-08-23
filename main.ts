@@ -59,13 +59,14 @@ async function downloadSqliteAmalgammation(
 
 async function run(): Promise<void> {
   const VERSION = core.getInput("version", { required: true });
+  const CFLAGS = core.getInput("cflags", { required: false });
   let platform: "windows" | "macos" | "linux" =
     process.platform === "win32"
       ? "windows"
       : process.platform === "darwin"
       ? "macos"
       : "linux";
-  console.log(process.platform, platform);
+
   const prefix = platform === "windows" ? "" : "lib";
   const suffix =
     platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
@@ -78,6 +79,7 @@ async function run(): Promise<void> {
   const result = spawnSync("gcc", [
     "-fPIC",
     "-shared",
+    ...CFLAGS.split(" "),
     path.join(directory, "sqlite3.c"),
     `-I${directory}`,
     "-o",

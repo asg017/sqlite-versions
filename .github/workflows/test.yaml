@@ -22,8 +22,25 @@ jobs:
             exit 1
           fi
         shell: bash
+  test-cflags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: asg017/sqlite-versions@main
+        id: sqlite-versions
+        with:
+          version: "3.42"
+          cflags: -DSQLITE_OMIT_JSON=1
+      - run: ls
+      - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+      - run: |
+          used="$(python3 -c 'import sqlite3; db = sqlite3.connect(':memory:'); print(db.execute(\'sqlite_compileoption_used('SQLITE_OMIT_JSON\')').fetchone()[0])')"
+          if [ $used != "2" ]; then
+            echo "cflags failed"
+            exit 1
+          fi
+        shell: bash
 
-  test:
+  test-multiple:
     strategy:
       fail-fast: false
       matrix:

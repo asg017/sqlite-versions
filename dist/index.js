@@ -92,12 +92,12 @@ function downloadSqliteAmalgammation(versionSpec, targetDirectory) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const VERSION = core.getInput("version", { required: true });
+        const CFLAGS = core.getInput("cflags", { required: false });
         let platform = process.platform === "win32"
             ? "windows"
             : process.platform === "darwin"
                 ? "macos"
                 : "linux";
-        console.log(process.platform, platform);
         const prefix = platform === "windows" ? "" : "lib";
         const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
         const targetPath = `${prefix}sqlite3${platform === "macos" ? "" : ""}.${suffix}`;
@@ -105,6 +105,7 @@ function run() {
         const result = (0, node_child_process_1.spawnSync)("gcc", [
             "-fPIC",
             "-shared",
+            ...CFLAGS.split(" "),
             path.join(directory, "sqlite3.c"),
             `-I${directory}`,
             "-o",

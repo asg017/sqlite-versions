@@ -5,6 +5,9 @@ inputs:
   version:
     description: "The SQLite version you wish to install."
     required: true
+  cflags:
+    description: "CFLAGS to use when compiling SQLite. Can be used to pass in SQLite compile time options."
+    required: true
 outputs:
   sqlite-location:
     description: TODO
