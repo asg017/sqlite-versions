@@ -38,7 +38,7 @@ jobs:
             db = sqlite3.connect(':memory:')
             print(db.execute('select sqlite_compileoption_used("SQLITE_OMIT_JSON")').fetchone()[0])
         run: |
-          used="$(python3 -c $SCRIPT)"
+          used="$(python3 -c "$SCRIPT")"
           if [ $used != "2" ]; then
             echo "cflags failed: $used"
             exit 1
