@@ -15,13 +15,10 @@ jobs:
           version: "3"
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
-      - run: |
-          py_sqlite_version="$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')"
-          if [ $py_sqlite_version != "3.42.0" ]; then
-            echo "should receive latest version"
-            exit 1
-          fi
-        shell: bash
+      - env:
+          SCRIPT: import sqlite3
+            assert sqlite3.sqlite_version == "3.42.0"
+        run: python3 -c "$SCRIPT"
   test-cflags:
     runs-on: ubuntu-latest
     steps:
@@ -59,11 +56,8 @@ jobs:
         id: sqlite-versions
         with:
           version: ${{ matrix.sqlite_version }}
-      - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
-      - run: |
-          py_sqlite_version="$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')"
-          if [  != "${{ matrix.sqlite_version }}" ]; then
-            echo "version mismatch: $py_sqlite_version != ${{ matrix.sqlite_version }}"
-            exit 1
-          fi
-        shell: bash
+      - env:
+          SCRIPT: |
+            import sqlite3
+            assert sqlite3.sqlite_version == "${{ matrix.sqlite_version }}"
+        run: python3 -c "$SCRIPT"
