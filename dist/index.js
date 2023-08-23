@@ -52,7 +52,6 @@ const path = __importStar(__nccwpck_require__(9411));
 const node_fs_1 = __nccwpck_require__(7561);
 const semver_1 = __nccwpck_require__(1383);
 function exportEnvAppend(name, value) {
-    console.log("exportEnvAppend", name, value);
     core.exportVariable(name, process.env[name] ? `${process.env[name]}:${value}` : value);
 }
 /*
@@ -84,7 +83,7 @@ function downloadSqliteAmalgammation(versionSpec, targetDirectory) {
         }
         else {
             const url = `https://www.sqlite.org/${year}/${filename}.zip`;
-            console.log(`downloading amalgammation at ${url}`);
+            core.info(`downloading amalgammation at ${url}`);
             const amalgammation = yield (0, node_fetch_1.default)(url).then((response) => {
                 if (response.status !== 200) {
                     throw Error(`Error fetching SQLite amalgamation [${response.status}]`);
@@ -103,6 +102,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const VERSION = core.getInput("version", { required: true });
         const CFLAGS = core.getInput("cflags", { required: false });
+        const skipActivate = core.getBooleanInput("skip-activate");
         let platform = process.platform === "win32"
             ? "windows"
             : process.platform === "darwin"
@@ -120,7 +120,8 @@ function run() {
         let cflag_args = CFLAGS === "" || CFLAGS.trim().length === 0
             ? []
             : CFLAGS.split(" ").filter((d) => d.length);
-        const result = (0, node_child_process_1.spawnSync)("gcc", [
+        const command = "gcc";
+        const args = [
             "-fPIC",
             "-shared",
             ...cflag_args,
@@ -128,12 +129,15 @@ function run() {
             `-I${directory}`,
             "-o",
             targetPath,
-        ]);
+        ];
+        core.info(`Executing ${command} ${JSON.stringify(args)}`);
+        const result = (0, node_child_process_1.spawnSync)(command, args);
         if (result.status !== 0) {
             throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
         }
         core.exportVariable("sqlite-location", process.cwd());
-        exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+        if (!skipActivate)
+            exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
     });
 }
 run();

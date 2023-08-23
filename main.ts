@@ -77,7 +77,7 @@ async function downloadSqliteAmalgammation(
 async function run(): Promise<void> {
   const VERSION = core.getInput("version", { required: true });
   const CFLAGS = core.getInput("cflags", { required: false });
-  const skipActicate = core.getBooleanInput("skip-input");
+  const skipActivate = core.getBooleanInput("skip-activate");
 
   let platform: "windows" | "macos" | "linux" =
     process.platform === "win32"
@@ -121,7 +121,7 @@ async function run(): Promise<void> {
 
   core.exportVariable("sqlite-location", process.cwd());
 
-  if (!skipActicate) exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+  if (!skipActivate) exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
 }
 
 run();

@@ -34,7 +34,7 @@ jobs:
 
             import os
             LD_LIBRARY_PATH = os.environ.get('LD_LIBRARY_PATH')
-            assert LD_LIBRARY_PATH == None, "expected LD_LIBRARY_PATH to be None, found {LD_LIBRARY_PATH}"
+            assert LD_LIBRARY_PATH == None, f"expected LD_LIBRARY_PATH to be None, found {LD_LIBRARY_PATH}"
 
             from pathlib import Path
             sqlite_location = Path("${{ steps.sqlite-versions.outputs.sqlite-location }}")
