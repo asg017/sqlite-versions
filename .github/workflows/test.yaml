@@ -6,22 +6,36 @@ on:
 permissions:
   contents: read
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+  test-latest:
+    runs-on: ubuntu-latest
     steps:
       - uses: asg017/sqlite-versions@main
         id: sqlite-versions
         with:
-          version: "3.39.0"
+          version: "3"
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
-      - uses: mxschmitt/action-tmate@v3
       - run: |
-          if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "3.39.0" ]; then
+          if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "3.42.0" ]; then
+            echo "should receive latest version"
+            exit 1
+          fi
+        shell: bash
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        sqlite_version: ["3.39.0", "3.17"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: asg017/sqlite-versions@main
+        id: sqlite-versions
+        with:
+          version: ${{ matrix.sqlite_version }}
+      - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+      - run: |
+          if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "${{ matrix.sqlite_version }}" ]; then
             echo "version mismatch"
             exit 1
           fi
