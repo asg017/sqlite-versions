@@ -30,7 +30,7 @@ jobs:
       - env:
           SCRIPT: |
             import sqlite3
-            assert sqlite3.sqlite_version == "3.37.2", f"expected default version (3.37.2) latest, got {sqlite3.sqlite_version}"
+            assert sqlite3.sqlite_version == "3.33.0", f"expected default version (3.33.0) latest, got {sqlite3.sqlite_version}"
 
             import os
             LD_LIBRARY_PATH = os.environ.get('LD_LIBRARY_PATH')
