@@ -32,10 +32,15 @@ jobs:
           cflags: -DSQLITE_OMIT_JSON=1
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
-      - run: |
-          used="$(python3 -c 'import sqlite3; db = sqlite3.connect(':memory:'); print(db.execute(\'sqlite_compileoption_used('SQLITE_OMIT_JSON\')').fetchone()[0])')"
+      - env:
+          SCRIPT: |
+            import sqlite3
+            db = sqlite3.connect(':memory:')
+            print(db.execute('select sqlite_compileoption_used("SQLITE_OMIT_JSON")').fetchone()[0])
+        run: |
+          used="$(python3 -c $SCRIPT)"
           if [ $used != "2" ]; then
-            echo "cflags failed"
+            echo "cflags failed: $used"
             exit 1
           fi
         shell: bash
