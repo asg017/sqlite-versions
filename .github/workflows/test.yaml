@@ -18,7 +18,7 @@ jobs:
       - env:
           SCRIPT: |
             import sqlite3
-            assert sqlite3.sqlite_version == "3.42.0"
+            assert sqlite3.sqlite_version == "3.42.0", f"expected 3.42.0 latest, got {sqlite3.sqlite_version}"
         run: python3 -c "$SCRIPT"
   test-cflags:
     runs-on: ubuntu-latest
