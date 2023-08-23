@@ -16,7 +16,8 @@ jobs:
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
       - run: |
-          if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "3.42.0" ]; then
+          py_sqlite_version="$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')"
+          if [ $py_sqlite_version != "3.42.0" ]; then
             echo "should receive latest version"
             exit 1
           fi
@@ -26,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sqlite_version: ["3.39.0", "3.17"]
+        sqlite_version: ["3.39.0", "3.17.0"]
     runs-on: ubuntu-latest
     steps:
       - uses: asg017/sqlite-versions@main
@@ -35,8 +36,9 @@ jobs:
           version: ${{ matrix.sqlite_version }}
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
       - run: |
-          if [ "$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')" != "${{ matrix.sqlite_version }}" ]; then
-            echo "version mismatch"
+          py_sqlite_version="$(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')"
+          if [  != "${{ matrix.sqlite_version }}" ]; then
+            echo "version mismatch: $py_sqlite_version != ${{ matrix.sqlite_version }}"
             exit 1
           fi
         shell: bash
