@@ -75,11 +75,11 @@ async function run(): Promise<void> {
   }.${suffix}`;
 
   let directory = await downloadSqliteAmalgammation(VERSION, "foo");
-
+  let cflag_args = CFLAGS === "" ? [] : CFLAGS.split(" ");
   const result = spawnSync("gcc", [
     "-fPIC",
     "-shared",
-    ...CFLAGS.split(" "),
+    ...cflag_args,
     path.join(directory, "sqlite3.c"),
     `-I${directory}`,
     "-o",

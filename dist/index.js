@@ -102,10 +102,11 @@ function run() {
         const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
         const targetPath = `${prefix}sqlite3${platform === "macos" ? "" : ""}.${suffix}`;
         let directory = yield downloadSqliteAmalgammation(VERSION, "foo");
+        let cflag_args = CFLAGS === "" ? [] : CFLAGS.split(" ");
         const result = (0, node_child_process_1.spawnSync)("gcc", [
             "-fPIC",
             "-shared",
-            ...CFLAGS.split(" "),
+            ...cflag_args,
             path.join(directory, "sqlite3.c"),
             `-I${directory}`,
             "-o",
