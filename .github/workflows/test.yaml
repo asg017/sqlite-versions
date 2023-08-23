@@ -16,7 +16,8 @@ jobs:
       - run: ls
       - run: python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
       - env:
-          SCRIPT: import sqlite3
+          SCRIPT: |
+            import sqlite3
             assert sqlite3.sqlite_version == "3.42.0"
         run: python3 -c "$SCRIPT"
   test-cflags:
