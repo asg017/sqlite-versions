@@ -77,7 +77,9 @@ async function downloadSqliteAmalgammation(
 async function run(): Promise<void> {
   const VERSION = core.getInput("version", { required: true });
   const CFLAGS = core.getInput("cflags", { required: false });
-  const skipActivate = core.getBooleanInput("skip-activate");
+  const skipActivate = core.getBooleanInput("skip-activate", {
+    required: false,
+  });
 
   let platform: "windows" | "macos" | "linux" =
     process.platform === "win32"

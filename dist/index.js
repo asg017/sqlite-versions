@@ -102,7 +102,9 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const VERSION = core.getInput("version", { required: true });
         const CFLAGS = core.getInput("cflags", { required: false });
-        const skipActivate = core.getBooleanInput("skip-activate");
+        const skipActivate = core.getBooleanInput("skip-activate", {
+            required: false,
+        });
         let platform = process.platform === "win32"
             ? "windows"
             : process.platform === "darwin"
