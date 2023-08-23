@@ -8,9 +8,12 @@ inputs:
   cflags:
     description: "CFLAGS to use when compiling SQLite. Can be used to pass in SQLite compile time options."
     required: false
+  skip-activate:
+    description: "This action will modifiy the LD_LIBRARY_PATH to point to the newly built SQLite version. To skip that, use skip-activate"
+    required: false
 outputs:
   sqlite-location:
-    description: TODO
+    description: Path to the directory containing the new compiled SQLite loadable library files
 runs:
   using: "node16"
   main: "dist/index.js"

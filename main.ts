@@ -9,7 +9,6 @@ import { mkdirSync } from "node:fs";
 import { maxSatisfying } from "semver";
 
 function exportEnvAppend(name: string, value: string) {
-  console.log("exportEnvAppend", name, value);
   core.exportVariable(
     name,
     process.env[name] ? `${process.env[name]}:${value}` : value
@@ -57,7 +56,7 @@ async function downloadSqliteAmalgammation(
   } else {
     const url = `https://www.sqlite.org/${year}/${filename}.zip`;
 
-    console.log(`downloading amalgammation at ${url}`);
+    core.info(`downloading amalgammation at ${url}`);
 
     const amalgammation = await fetch(url).then((response) => {
       if (response.status !== 200) {
@@ -78,6 +77,7 @@ async function downloadSqliteAmalgammation(
 async function run(): Promise<void> {
   const VERSION = core.getInput("version", { required: true });
   const CFLAGS = core.getInput("cflags", { required: false });
+  const skipActicate = core.getBooleanInput("skip-input");
 
   let platform: "windows" | "macos" | "linux" =
     process.platform === "win32"
@@ -103,8 +103,8 @@ async function run(): Promise<void> {
     CFLAGS === "" || CFLAGS.trim().length === 0
       ? []
       : CFLAGS.split(" ").filter((d) => d.length);
-
-  const result = spawnSync("gcc", [
+  const command = "gcc";
+  const args = [
     "-fPIC",
     "-shared",
     ...cflag_args,
@@ -112,13 +112,16 @@ async function run(): Promise<void> {
     `-I${directory}`,
     "-o",
     targetPath,
-  ]);
+  ];
+  core.info(`Executing ${command} ${JSON.stringify(args)}`);
+  const result = spawnSync(command, args);
   if (result.status !== 0) {
     throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
   }
 
   core.exportVariable("sqlite-location", process.cwd());
-  exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+
+  if (!skipActicate) exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
 }
 
 run();
