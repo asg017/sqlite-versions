@@ -49,6 +49,7 @@ const node_child_process_1 = __nccwpck_require__(7718);
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const path = __importStar(__nccwpck_require__(9411));
+const node_fs_1 = __nccwpck_require__(7561);
 const semver_1 = __nccwpck_require__(1383);
 function exportEnvAppend(name, value) {
     console.log("exportEnvAppend", name, value);
@@ -113,7 +114,9 @@ function run() {
         if (platform === "windows" || platform === "macos") {
             throw Error("Unsupported platform " + platform);
         }
-        let directory = yield downloadSqliteAmalgammation(VERSION, path.join(process.env.RUNNER_TEMP, "sqlite-versions"));
+        let targetDirectory = path.join(process.env.RUNNER_TEMP, "sqlite-versions");
+        (0, node_fs_1.mkdirSync)(targetDirectory);
+        let directory = yield downloadSqliteAmalgammation(VERSION, targetDirectory);
         let cflag_args = CFLAGS === "" || CFLAGS.trim().length === 0
             ? []
             : CFLAGS.split(" ").filter((d) => d.length);
@@ -68727,6 +68730,14 @@ module.exports = require("node:child_process");
 
 /***/ }),
 
+/***/ 7561:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs");
+
+/***/ }),
+
 /***/ 9411:
 /***/ ((module) => {
 
@@ -68959,34 +68970,23 @@ const File = _File
 
 /***/ }),
 
-/***/ 1563:
+/***/ 2185:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
 
 "use strict";
-
-// EXPORTS
-__nccwpck_require__.d(__webpack_exports__, {
-  "t6": () => (/* reexport */ fetch_blob/* default */.Z),
-  "$B": () => (/* reexport */ file/* default */.Z),
-  "xB": () => (/* binding */ blobFrom),
-  "SX": () => (/* binding */ blobFromSync),
-  "e2": () => (/* binding */ fileFrom),
-  "RA": () => (/* binding */ fileFromSync)
-});
-
-// UNUSED EXPORTS: default
-
-;// CONCATENATED MODULE: external "node:fs"
-const external_node_fs_namespaceObject = require("node:fs");
-// EXTERNAL MODULE: external "node:path"
-var external_node_path_ = __nccwpck_require__(9411);
-// EXTERNAL MODULE: ./node_modules/node-domexception/index.js
-var node_domexception = __nccwpck_require__(7760);
-// EXTERNAL MODULE: ./node_modules/fetch-blob/file.js
-var file = __nccwpck_require__(3213);
-// EXTERNAL MODULE: ./node_modules/fetch-blob/index.js
-var fetch_blob = __nccwpck_require__(1410);
-;// CONCATENATED MODULE: ./node_modules/fetch-blob/from.js
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "$B": () => (/* reexport safe */ _file_js__WEBPACK_IMPORTED_MODULE_3__.Z),
+/* harmony export */   "RA": () => (/* binding */ fileFromSync),
+/* harmony export */   "SX": () => (/* binding */ blobFromSync),
+/* harmony export */   "e2": () => (/* binding */ fileFrom),
+/* harmony export */   "t6": () => (/* reexport safe */ _index_js__WEBPACK_IMPORTED_MODULE_4__.Z),
+/* harmony export */   "xB": () => (/* binding */ blobFrom)
+/* harmony export */ });
+/* harmony import */ var node_fs__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7561);
+/* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9411);
+/* harmony import */ var node_domexception__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(7760);
+/* harmony import */ var _file_js__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(3213);
+/* harmony import */ var _index_js__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(1410);
 
 
 
@@ -68994,13 +68994,13 @@ var fetch_blob = __nccwpck_require__(1410);
 
 
 
-const { stat } = external_node_fs_namespaceObject.promises
+const { stat } = node_fs__WEBPACK_IMPORTED_MODULE_0__.promises
 
 /**
  * @param {string} path filepath on the disk
  * @param {string} [type] mimetype to use
  */
-const blobFromSync = (path, type) => fromBlob((0,external_node_fs_namespaceObject.statSync)(path), path, type)
+const blobFromSync = (path, type) => fromBlob((0,node_fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(path), path, type)
 
 /**
  * @param {string} path filepath on the disk
@@ -69020,10 +69020,10 @@ const fileFrom = (path, type) => stat(path).then(stat => fromFile(stat, path, ty
  * @param {string} path filepath on the disk
  * @param {string} [type] mimetype to use
  */
-const fileFromSync = (path, type) => fromFile((0,external_node_fs_namespaceObject.statSync)(path), path, type)
+const fileFromSync = (path, type) => fromFile((0,node_fs__WEBPACK_IMPORTED_MODULE_0__.statSync)(path), path, type)
 
 // @ts-ignore
-const fromBlob = (stat, path, type = '') => new fetch_blob/* default */.Z([new BlobDataItem({
+const fromBlob = (stat, path, type = '') => new _index_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z([new BlobDataItem({
   path,
   size: stat.size,
   lastModified: stat.mtimeMs,
@@ -69031,12 +69031,12 @@ const fromBlob = (stat, path, type = '') => new fetch_blob/* default */.Z([new B
 })], { type })
 
 // @ts-ignore
-const fromFile = (stat, path, type = '') => new file/* default */.Z([new BlobDataItem({
+const fromFile = (stat, path, type = '') => new _file_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z([new BlobDataItem({
   path,
   size: stat.size,
   lastModified: stat.mtimeMs,
   start: 0
-})], (0,external_node_path_.basename)(path), { type, lastModified: stat.mtimeMs })
+})], (0,node_path__WEBPACK_IMPORTED_MODULE_1__.basename)(path), { type, lastModified: stat.mtimeMs })
 
 /**
  * This is a blob backed up by a file on the disk
@@ -69072,9 +69072,9 @@ class BlobDataItem {
   async * stream () {
     const { mtimeMs } = await stat(this.#path)
     if (mtimeMs > this.lastModified) {
-      throw new node_domexception('The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.', 'NotReadableError')
+      throw new node_domexception__WEBPACK_IMPORTED_MODULE_2__('The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.', 'NotReadableError')
     }
-    yield * (0,external_node_fs_namespaceObject.createReadStream)(this.#path, {
+    yield * (0,node_fs__WEBPACK_IMPORTED_MODULE_0__.createReadStream)(this.#path, {
       start: this.#start,
       end: this.#start + this.size - 1
     })
@@ -69085,7 +69085,7 @@ class BlobDataItem {
   }
 }
 
-/* harmony default export */ const from = ((/* unused pure expression or super */ null && (blobFromSync)));
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = ((/* unused pure expression or super */ null && (blobFromSync)));
 
 
 
@@ -71165,8 +71165,8 @@ class AbortError extends FetchBaseError {
 	}
 }
 
-// EXTERNAL MODULE: ./node_modules/fetch-blob/from.js + 1 modules
-var from = __nccwpck_require__(1563);
+// EXTERNAL MODULE: ./node_modules/fetch-blob/from.js
+var from = __nccwpck_require__(2185);
 ;// CONCATENATED MODULE: ./node_modules/node-fetch/src/index.js
 /**
  * Index.js
