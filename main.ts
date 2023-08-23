@@ -69,7 +69,8 @@ async function downloadSqliteAmalgammation(
     const zip = new AdmZip(Buffer.from(amalgammation));
     zip.extractAllTo(targetDirectory);
 
-    if (cache.isFeatureAvailable()) await cache.saveCache(["PATHS"], filename);
+    if (cache.isFeatureAvailable())
+      await cache.saveCache([targetDirectory], filename);
   }
   return path.join(targetDirectory, filename);
 }
