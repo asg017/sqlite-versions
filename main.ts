@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import fetch from "node-fetch";
 import AdmZip from "adm-zip";
 import * as path from "node:path";
+import { mkdirSync } from "node:fs";
 import { maxSatisfying } from "semver";
 
 function exportEnvAppend(name: string, value: string) {
@@ -94,11 +95,9 @@ async function run(): Promise<void> {
   if (platform === "windows" || platform === "macos") {
     throw Error("Unsupported platform " + platform);
   }
-
-  let directory = await downloadSqliteAmalgammation(
-    VERSION,
-    path.join(process.env.RUNNER_TEMP!, "sqlite-versions")
-  );
+  let targetDirectory = path.join(process.env.RUNNER_TEMP!, "sqlite-versions");
+  mkdirSync(targetDirectory);
+  let directory = await downloadSqliteAmalgammation(VERSION, targetDirectory);
   let cflag_args =
     CFLAGS === "" || CFLAGS.trim().length === 0
       ? []
