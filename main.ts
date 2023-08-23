@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import * as cache from "@actions/cache";
 import * as process from "node:process";
 import { spawnSync } from "node:child_process";
 import fetch from "node-fetch";
@@ -39,27 +40,43 @@ async function downloadSqliteAmalgammation(
     maxSatisfying(Object.keys(versionYears), versionSpec);
   if (version === null)
     throw Error(`could not resolve a SQLite version for ${versionSpec}`);
+
   const [major, minor, patch] = version.split(".");
   const year = versionYears[version].slice(0, "YYYY".length);
+
   const filename = `sqlite-amalgamation-${major}${minor.padStart(
     2,
     "0"
   )}${patch.padStart(2, "0")}00`;
-  const url = `https://www.sqlite.org/${year}/${filename}.zip`;
-  console.log(`download amalgammation at ${url}`);
-  const amalgammation = await fetch(url).then((response) => {
-    console.log(response.status);
-    return response.arrayBuffer();
-  });
-  console.log("putting in zip...");
-  const zip = new AdmZip(Buffer.from(amalgammation));
-  zip.extractAllTo(targetDirectory);
+
+  if (
+    cache.isFeatureAvailable() &&
+    (await cache.restoreCache([targetDirectory], filename)) !== undefined
+  ) {
+  } else {
+    const url = `https://www.sqlite.org/${year}/${filename}.zip`;
+
+    console.log(`downloading amalgammation at ${url}`);
+
+    const amalgammation = await fetch(url).then((response) => {
+      if (response.status !== 200) {
+        throw Error(`Error fetching SQLite amalgamation [${response.status}]`);
+      }
+      return response.arrayBuffer();
+    });
+
+    const zip = new AdmZip(Buffer.from(amalgammation));
+    zip.extractAllTo(targetDirectory);
+
+    if (cache.isFeatureAvailable()) await cache.saveCache(["PATHS"], filename);
+  }
   return path.join(targetDirectory, filename);
 }
 
 async function run(): Promise<void> {
   const VERSION = core.getInput("version", { required: true });
   const CFLAGS = core.getInput("cflags", { required: false });
+
   let platform: "windows" | "macos" | "linux" =
     process.platform === "win32"
       ? "windows"
@@ -74,8 +91,19 @@ async function run(): Promise<void> {
     platform === "macos" ? "" : ""
   }.${suffix}`;
 
-  let directory = await downloadSqliteAmalgammation(VERSION, "foo");
-  let cflag_args = CFLAGS === "" ? [] : CFLAGS.split(" ");
+  if (platform === "windows" || platform === "macos") {
+    throw Error("Unsupported platform " + platform);
+  }
+
+  let directory = await downloadSqliteAmalgammation(
+    VERSION,
+    path.join(process.env.RUNNER_TEMP!, "sqlite-versions")
+  );
+  let cflag_args =
+    CFLAGS === "" || CFLAGS.trim().length === 0
+      ? []
+      : CFLAGS.split(" ").filter((d) => d.length);
+
   const result = spawnSync("gcc", [
     "-fPIC",
     "-shared",
@@ -85,14 +113,12 @@ async function run(): Promise<void> {
     "-o",
     targetPath,
   ]);
-  result.status;
-  core.exportVariable("sqlite-location", process.cwd());
+  if (result.status !== 0) {
+    throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
+  }
 
-  if (platform === "windows") core.addPath(process.cwd());
-  else if (platform === "macos")
-    exportEnvAppend("DYLD_LIBRARY_PATH", process.cwd());
-  else if (platform === "linux")
-    exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+  core.exportVariable("sqlite-location", process.cwd());
+  exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
 }
 
 run();
