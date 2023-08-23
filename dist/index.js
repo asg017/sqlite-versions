@@ -94,7 +94,7 @@ function downloadSqliteAmalgammation(versionSpec, targetDirectory) {
             const zip = new adm_zip_1.default(Buffer.from(amalgammation));
             zip.extractAllTo(targetDirectory);
             if (cache.isFeatureAvailable())
-                yield cache.saveCache(["PATHS"], filename);
+                yield cache.saveCache([targetDirectory], filename);
         }
         return path.join(targetDirectory, filename);
     });
