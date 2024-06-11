@@ -107,6 +107,22 @@ async function run(): Promise<void> {
       ? []
       : CFLAGS.split(" ").filter((d) => d.length);
 
+  const command = "gcc";
+  const args = [
+    "-fPIC",
+    "-shared",
+    ...cflag_args,
+    path.join(directory, "sqlite3.c"),
+    `-I${directory}`,
+    "-o",
+    targetPath,
+  ];
+  core.info(`Executing ${command} ${JSON.stringify(args)}`);
+  const result = spawnSync(command, args);
+  if (result.status !== 0) {
+    throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
+  }
+
   core.exportVariable("sqlite-location", process.cwd());
 
   if (!skipActivate) exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());

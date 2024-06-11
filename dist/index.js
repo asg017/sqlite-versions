@@ -45,6 +45,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const cache = __importStar(__nccwpck_require__(7799));
 const process = __importStar(__nccwpck_require__(7742));
+const node_child_process_1 = __nccwpck_require__(7718);
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const path = __importStar(__nccwpck_require__(9411));
@@ -122,6 +123,21 @@ function run() {
         let cflag_args = CFLAGS === "" || CFLAGS.trim().length === 0
             ? []
             : CFLAGS.split(" ").filter((d) => d.length);
+        const command = "gcc";
+        const args = [
+            "-fPIC",
+            "-shared",
+            ...cflag_args,
+            path.join(directory, "sqlite3.c"),
+            `-I${directory}`,
+            "-o",
+            targetPath,
+        ];
+        core.info(`Executing ${command} ${JSON.stringify(args)}`);
+        const result = (0, node_child_process_1.spawnSync)(command, args);
+        if (result.status !== 0) {
+            throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
+        }
         core.exportVariable("sqlite-location", process.cwd());
         if (!skipActivate)
             exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
@@ -68710,6 +68726,14 @@ module.exports = require("https");
 
 "use strict";
 module.exports = require("net");
+
+/***/ }),
+
+/***/ 7718:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:child_process");
 
 /***/ }),
 
