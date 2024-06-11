@@ -8,10 +8,10 @@ import * as path from "node:path";
 import { mkdirSync } from "node:fs";
 import { maxSatisfying } from "semver";
 
-function exportEnvAppend(name: string, value: string) {
+function exportEnvPrepend(name: string, value: string) {
   core.exportVariable(
     name,
-    process.env[name] ? `${process.env[name]}:${value}` : value
+    process.env[name] ? `${value}:${process.env[name]}` : value
   );
 }
 
@@ -109,7 +109,7 @@ async function run(): Promise<void> {
 
   core.exportVariable("sqlite-location", process.cwd());
 
-  if (!skipActivate) exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+  if (!skipActivate) exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
 }
 
 run();

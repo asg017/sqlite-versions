@@ -50,8 +50,8 @@ const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const path = __importStar(__nccwpck_require__(9411));
 const node_fs_1 = __nccwpck_require__(7561);
 const semver_1 = __nccwpck_require__(1383);
-function exportEnvAppend(name, value) {
-    core.exportVariable(name, process.env[name] ? `${process.env[name]}:${value}` : value);
+function exportEnvPrepend(name, value) {
+    core.exportVariable(name, process.env[name] ? `${value}:${process.env[name]}` : value);
 }
 /*
 
@@ -124,7 +124,7 @@ function run() {
             : CFLAGS.split(" ").filter((d) => d.length);
         core.exportVariable("sqlite-location", process.cwd());
         if (!skipActivate)
-            exportEnvAppend("LD_LIBRARY_PATH", process.cwd());
+            exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
     });
 }
 run();
