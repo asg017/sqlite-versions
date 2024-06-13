@@ -115,7 +115,7 @@ function run() {
         const prefix = platform === "windows" ? "" : "lib";
         const suffix = platform === "windows" ? "dll" : platform === "macos" ? "dylib" : "so.0";
         const targetPath = `${prefix}sqlite3${platform === "macos" ? "" : ""}.${suffix}`;
-        if (platform === "windows" || platform === "macos") {
+        if (platform === "windows") {
             throw Error("Unsupported platform " + platform);
         }
         let targetDirectory = path.join(process.env.RUNNER_TEMP, "sqlite-versions");

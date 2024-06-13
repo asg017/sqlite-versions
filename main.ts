@@ -97,7 +97,7 @@ async function run(): Promise<void> {
     platform === "macos" ? "" : ""
   }.${suffix}`;
 
-  if (platform === "windows" || platform === "macos") {
+  if (platform === "windows") {
     throw Error("Unsupported platform " + platform);
   }
   let targetDirectory = path.join(process.env.RUNNER_TEMP!, "sqlite-versions");
