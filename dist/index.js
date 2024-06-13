@@ -51,6 +51,7 @@ const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const path = __importStar(__nccwpck_require__(9411));
 const node_fs_1 = __nccwpck_require__(7561);
 const semver_1 = __nccwpck_require__(1383);
+const os = __importStar(__nccwpck_require__(612));
 function exportEnvPrepend(name, value) {
     core.exportVariable(name, process.env[name] ? `${value}:${process.env[name]}` : value);
 }
@@ -139,8 +140,14 @@ function run() {
             throw Error(`Error compiling SQLite amalgamation: ${result.stderr}`);
         }
         core.exportVariable("sqlite-location", process.cwd());
-        if (!skipActivate)
-            exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
+        if (!skipActivate) {
+            if (os.platform() === "darwin") {
+                exportEnvPrepend("DYLD_LIBRARY_PATH", process.cwd());
+            }
+            else {
+                exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
+            }
+        }
     });
 }
 run();
@@ -68742,6 +68749,14 @@ module.exports = require("node:child_process");
 
 "use strict";
 module.exports = require("node:fs");
+
+/***/ }),
+
+/***/ 612:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:os");
 
 /***/ }),
 

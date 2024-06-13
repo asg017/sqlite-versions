@@ -7,6 +7,7 @@ import AdmZip from "adm-zip";
 import * as path from "node:path";
 import { mkdirSync } from "node:fs";
 import { maxSatisfying } from "semver";
+import * as os from "node:os";
 
 function exportEnvPrepend(name: string, value: string) {
   core.exportVariable(
@@ -125,7 +126,13 @@ async function run(): Promise<void> {
 
   core.exportVariable("sqlite-location", process.cwd());
 
-  if (!skipActivate) exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
+  if (!skipActivate) {
+    if (os.platform() === "darwin") {
+      exportEnvPrepend("DYLD_LIBRARY_PATH", process.cwd());
+    } else {
+      exportEnvPrepend("LD_LIBRARY_PATH", process.cwd());
+    }
+  }
 }
 
 run();
